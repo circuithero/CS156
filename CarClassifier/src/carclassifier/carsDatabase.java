@@ -4,10 +4,10 @@
  */
 package carclassifier;
 
-import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * Creates and manages a connection to the cars database.
@@ -36,7 +36,7 @@ public class carsDatabase {
         return this.con;
     }
     
-    private void disconnectFromDB() {
+    public void disconnectFromDB() {
         try {
             con.close();
             System.out.println("Disconnected from database!");

@@ -41,6 +41,10 @@ public class CarClassifier {
             System.err.println(ex.getMessage());
         }
     }
+    
+    public void closeConnection() {
+        DBC.disconnectFromDB();
+    }
 
     /**
      * Determine whether the model is a sport or luxury vehicle.

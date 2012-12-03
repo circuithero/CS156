@@ -4,6 +4,10 @@
  */
 package carclassifier;
 
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author Danny Ng
@@ -54,6 +58,11 @@ public class gui extends javax.swing.JFrame {
         setMaximumSize(new java.awt.Dimension(800, 420));
         setMinimumSize(new java.awt.Dimension(800, 420));
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         mainPanel.setBackground(new java.awt.Color(255, 255, 255));
         mainPanel.setMaximumSize(new java.awt.Dimension(800, 420));
@@ -176,6 +185,13 @@ public class gui extends javax.swing.JFrame {
         doorsValue.setText(carDetails[5]);
         seatValue.setText(carDetails[6]);
     }//GEN-LAST:event_modelComboBoxActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        try {
+            carClassifier.closeConnection();
+        } catch (Exception ex) {
+        }
+    }//GEN-LAST:event_formWindowClosing
 
     /**
      * @param args the command line arguments
