@@ -19,7 +19,7 @@ public class gui extends javax.swing.JFrame {
     private static carsDatabase DBC;
     private static Statement stmnt;
     private CarClassifier carClassifier;
-    private String [] carDetails;
+    private boolean allModelsAdded = false;
     
     /**
      * Creates new form gui
@@ -27,6 +27,7 @@ public class gui extends javax.swing.JFrame {
     public gui() {
         initComponents();
         carClassifier = new CarClassifier();
+        getModels();
     }
 
     /**
@@ -40,7 +41,6 @@ public class gui extends javax.swing.JFrame {
 
         mainPanel = new javax.swing.JPanel();
         vehicleLabel = new javax.swing.JLabel();
-        manufacturerComboBox = new javax.swing.JComboBox();
         manufacturerLabel = new javax.swing.JLabel();
         modelLabel = new javax.swing.JLabel();
         priceLabel = new javax.swing.JLabel();
@@ -78,15 +78,6 @@ public class gui extends javax.swing.JFrame {
         vehicleLabel.setFont(new java.awt.Font("Segoe UI Light", 0, 24)); // NOI18N
         vehicleLabel.setText("Vehicle");
         mainPanel.add(vehicleLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
-
-        manufacturerComboBox.setFont(new java.awt.Font("Segoe UI Light", 0, 18)); // NOI18N
-        manufacturerComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Acura", "Audi" }));
-        manufacturerComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                manufacturerComboBoxActionPerformed(evt);
-            }
-        });
-        mainPanel.add(manufacturerComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 10, 280, -1));
 
         manufacturerLabel.setFont(new java.awt.Font("Segoe UI Light", 0, 18)); // NOI18N
         manufacturerLabel.setText("Manufacturer");
@@ -146,13 +137,12 @@ public class gui extends javax.swing.JFrame {
         mainPanel.add(classValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 380, -1, -1));
 
         modelComboBox.setFont(new java.awt.Font("Segoe UI Light", 0, 18)); // NOI18N
-        modelComboBox.setEnabled(false);
         modelComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 modelComboBoxActionPerformed(evt);
             }
         });
-        mainPanel.add(modelComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 10, 400, -1));
+        mainPanel.add(modelComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 10, 400, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -168,61 +158,46 @@ public class gui extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void manufacturerComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manufacturerComboBoxActionPerformed
-        getModels();
-        modelComboBox.setEnabled(true);
-    }//GEN-LAST:event_manufacturerComboBoxActionPerformed
-
     private void modelComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modelComboBoxActionPerformed
-        getModelDetails();
+        if (allModelsAdded) {
+            try {
+                ResultSet rs;
+
+                String model = modelComboBox.getSelectedItem().toString();
+
+                String query = "select * from CARS where model='" + model + "'";
+                rs = stmnt.executeQuery(query);
+                if (rs.next()) {
+                    manufacturerValue.setText(rs.getString(1));
+                    modelValue.setText(rs.getString(2));
+                    priceValue.setText(rs.getString(3));
+                    hpValue.setText(rs.getString(4));
+                    weightValue.setText(rs.getString(5));
+                    doorsValue.setText(rs.getString(6));
+                    seatValue.setText(rs.getString(7));
+                }
+            } catch (Exception e) {
+            }
+        }
     }//GEN-LAST:event_modelComboBoxActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         try {
-            carClassifier.closeConnection();
+            DBC.disconnectFromDB();
         } catch (Exception ex) {
         }
     }//GEN-LAST:event_formWindowClosing
 
     private void getModels() {
-        modelComboBox.removeAllItems();
-        modelComboBox.setEnabled(false);
         try {
             ResultSet rs;
-            String manufacturer = 
-                manufacturerComboBox.getSelectedItem().toString().toUpperCase();
            
-            String query = "select distinct model from CARS where maker='"
-                    + manufacturer + "' order by model asc";        
+            String query = "select distinct model from CARS order by model asc";        
             rs = stmnt.executeQuery(query);
             while (rs.next()) {
                 modelComboBox.addItem(rs.getString(1));
             }
-        } catch (Exception e) {
-        }
-    }
-    
-    private void getModelDetails() {
-        try {
-            ResultSet rs;
-            String model = modelComboBox.getSelectedItem().toString();
-            
-            String query = "select * from CARS where model='" + model + "'";   
-            rs = stmnt.executeQuery(query);
-            /*ResultSetMetaData metaData = rs.getMetaData();
-            carDetails = new String[metaData.getColumnCount()];
-            for (int i = 1; i <= metaData.getColumnCount(); i++) {
-                carDetails[i - 1] = rs.getString(i);               
-            }*/
-            if (rs.next()) {
-                manufacturerValue.setText(rs.getString(1));
-                modelValue.setText(rs.getString(2));
-                priceValue.setText(rs.getString(3));
-                hpValue.setText(rs.getString(4));
-                weightValue.setText(rs.getString(5));
-                doorsValue.setText(rs.getString(6));
-                seatValue.setText(rs.getString(7));
-            }
+            allModelsAdded = true;
         } catch (Exception e) {
         }
     }
@@ -252,7 +227,6 @@ public class gui extends javax.swing.JFrame {
     private javax.swing.JLabel hpLabel;
     private javax.swing.JLabel hpValue;
     private javax.swing.JPanel mainPanel;
-    private javax.swing.JComboBox manufacturerComboBox;
     private javax.swing.JLabel manufacturerLabel;
     private javax.swing.JLabel manufacturerValue;
     private javax.swing.JComboBox modelComboBox;
