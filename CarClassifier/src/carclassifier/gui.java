@@ -20,6 +20,11 @@ public class gui extends javax.swing.JFrame {
     private static Statement stmnt;
     private CarClassifier carClassifier;
     private boolean allModelsAdded = false;
+    private String price;
+    private String hp;
+    private String weight;
+    private String doors;
+    private String seats;
     
     /**
      * Creates new form gui
@@ -60,8 +65,9 @@ public class gui extends javax.swing.JFrame {
         modelComboBox = new javax.swing.JComboBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMaximumSize(new java.awt.Dimension(800, 420));
-        setMinimumSize(new java.awt.Dimension(800, 420));
+        setMaximumSize(new java.awt.Dimension(450, 420));
+        setMinimumSize(new java.awt.Dimension(450, 420));
+        setPreferredSize(new java.awt.Dimension(450, 420));
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
@@ -70,9 +76,9 @@ public class gui extends javax.swing.JFrame {
         });
 
         mainPanel.setBackground(new java.awt.Color(255, 255, 255));
-        mainPanel.setMaximumSize(new java.awt.Dimension(800, 420));
-        mainPanel.setMinimumSize(new java.awt.Dimension(800, 420));
-        mainPanel.setPreferredSize(new java.awt.Dimension(800, 420));
+        mainPanel.setMaximumSize(new java.awt.Dimension(450, 420));
+        mainPanel.setMinimumSize(new java.awt.Dimension(450, 420));
+        mainPanel.setPreferredSize(new java.awt.Dimension(450, 420));
         mainPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         vehicleLabel.setFont(new java.awt.Font("Segoe UI Light", 0, 24)); // NOI18N
@@ -130,11 +136,11 @@ public class gui extends javax.swing.JFrame {
 
         classLabel.setFont(new java.awt.Font("Segoe UI Light", 0, 18)); // NOI18N
         classLabel.setText("Classification");
-        mainPanel.add(classLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 380, -1, -1));
+        mainPanel.add(classLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 360, -1, -1));
 
         classValue.setFont(new java.awt.Font("Segoe UI Light", 0, 18)); // NOI18N
-        classValue.setText("Luxury Sports Sedan");
-        mainPanel.add(classValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 380, -1, -1));
+        classValue.setForeground(new java.awt.Color(204, 0, 0));
+        mainPanel.add(classValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 360, -1, -1));
 
         modelComboBox.setFont(new java.awt.Font("Segoe UI Light", 0, 18)); // NOI18N
         modelComboBox.addActionListener(new java.awt.event.ActionListener() {
@@ -142,7 +148,7 @@ public class gui extends javax.swing.JFrame {
                 modelComboBoxActionPerformed(evt);
             }
         });
-        mainPanel.add(modelComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 10, 400, -1));
+        mainPanel.add(modelComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 10, 330, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -168,14 +174,21 @@ public class gui extends javax.swing.JFrame {
                 String query = "select * from CARS where model='" + model + "'";
                 rs = stmnt.executeQuery(query);
                 if (rs.next()) {
+                    price = rs.getString(3);
+                    hp = rs.getString(4);
+                    weight = rs.getString(5);
+                    doors = rs.getString(6);
+                    seats = rs.getString(7);
+                    
                     manufacturerValue.setText(rs.getString(1));
                     modelValue.setText(rs.getString(2));
-                    priceValue.setText(rs.getString(3));
-                    hpValue.setText(rs.getString(4));
-                    weightValue.setText(rs.getString(5));
-                    doorsValue.setText(rs.getString(6));
-                    seatValue.setText(rs.getString(7));
+                    priceValue.setText(price);
+                    hpValue.setText(hp);
+                    weightValue.setText(weight);
+                    doorsValue.setText(doors);
+                    seatValue.setText(seats);
                 }
+                classValue.setText(getClassification());
             } catch (Exception e) {
             }
         }
@@ -200,6 +213,14 @@ public class gui extends javax.swing.JFrame {
             allModelsAdded = true;
         } catch (Exception e) {
         }
+    }
+    
+    private String getClassification() {
+        String carType = carClassifier.calculateType(Integer.parseInt(doors), Integer.parseInt(seats));
+        String costType = carClassifier.calculateCost(Integer.parseInt(price), Integer.parseInt(hp));
+        String classType = carClassifier.calculateClass(Integer.parseInt(weight));
+        
+        return costType + classType + carType;
     }
     
     /**

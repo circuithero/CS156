@@ -21,8 +21,10 @@ public class CarClassifier {
     private static final int COMPACT = 2999;
     private static final int MEDIUM = 3499;
     private static final int HEAVY = 3500;
-    private static final int LUXURY = 50000;
+    private static int LUXURY = 30000;
     private static final int SPORT = 200;
+    private String type;
+    private static int THRESHOLD = 5000;
 
     /**
      * Determine whether the model is a sport or luxury vehicle.
@@ -31,13 +33,18 @@ public class CarClassifier {
      * @param hp the horsepower of the vehicle
      * @return the type of the vehicle
      */
-    private String calculateCost(int cost, int hp) {
+    public String calculateCost(int cost, int hp) {
         String costType = "";
+        int luxuryCost = (LUXURY + cost / 2) - THRESHOLD;
+        if (luxuryCost > LUXURY) {
+            LUXURY = luxuryCost;
+        }
 
         if (cost >= LUXURY) {
             costType = " luxury";
         }
-        if (hp >= SPORT) {
+        if (hp >= SPORT && (!type.equalsIgnoreCase("minivan") || 
+                (!type.equalsIgnoreCase("SUV")))) {
             costType += " sports";
         }
         return costType;
@@ -49,7 +56,7 @@ public class CarClassifier {
      * @param weight the weight of the vehicle in pounds
      * @return the class of the vehicle
      */
-    private String calculateClass(int weight) {
+    public String calculateClass(int weight) {
         String classification = "";
 
         if (weight >= MINI_LOW && weight <= MINI_HIGH) {
@@ -73,8 +80,7 @@ public class CarClassifier {
      * @param seats the amount of seating in the vehicle
      * @return the type of the vehicle
      */
-    private String calculateType(int doors, int seats) {
-        String type = "";
+    public String calculateType(int doors, int seats) {
 
         if (doors == 2) {
             type = " roadster";
