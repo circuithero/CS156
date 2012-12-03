@@ -9,12 +9,15 @@ package carclassifier;
  * @author Danny Ng
  */
 public class gui extends javax.swing.JFrame {
-
+    private CarClassifier carClassifier;
+    private String [] carDetails;
+    
     /**
      * Creates new form gui
      */
     public gui() {
         initComponents();
+        carClassifier = new CarClassifier();
     }
 
     /**
@@ -28,7 +31,7 @@ public class gui extends javax.swing.JFrame {
 
         mainPanel = new javax.swing.JPanel();
         vehicleLabel = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox();
+        manufacturerComboBox = new javax.swing.JComboBox();
         manufacturerLabel = new javax.swing.JLabel();
         modelLabel = new javax.swing.JLabel();
         priceLabel = new javax.swing.JLabel();
@@ -45,11 +48,11 @@ public class gui extends javax.swing.JFrame {
         manufacturerValue = new javax.swing.JLabel();
         classLabel = new javax.swing.JLabel();
         classValue = new javax.swing.JLabel();
+        modelComboBox = new javax.swing.JComboBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMaximumSize(new java.awt.Dimension(800, 420));
         setMinimumSize(new java.awt.Dimension(800, 420));
-        setPreferredSize(new java.awt.Dimension(800, 420));
         setResizable(false);
 
         mainPanel.setBackground(new java.awt.Color(255, 255, 255));
@@ -62,8 +65,14 @@ public class gui extends javax.swing.JFrame {
         vehicleLabel.setText("Vehicle");
         mainPanel.add(vehicleLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
 
-        jComboBox1.setFont(new java.awt.Font("Segoe UI Light", 0, 18)); // NOI18N
-        mainPanel.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 10, 350, -1));
+        manufacturerComboBox.setFont(new java.awt.Font("Segoe UI Light", 0, 18)); // NOI18N
+        manufacturerComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Acura", "Audi" }));
+        manufacturerComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                manufacturerComboBoxActionPerformed(evt);
+            }
+        });
+        mainPanel.add(manufacturerComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 10, 280, -1));
 
         manufacturerLabel.setFont(new java.awt.Font("Segoe UI Light", 0, 18)); // NOI18N
         manufacturerLabel.setText("Manufacturer");
@@ -129,6 +138,14 @@ public class gui extends javax.swing.JFrame {
         classValue.setText("Luxury Sports Sedan");
         mainPanel.add(classValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 380, -1, -1));
 
+        modelComboBox.setFont(new java.awt.Font("Segoe UI Light", 0, 18)); // NOI18N
+        modelComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                modelComboBoxActionPerformed(evt);
+            }
+        });
+        mainPanel.add(modelComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 10, 400, -1));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -143,33 +160,27 @@ public class gui extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void manufacturerComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manufacturerComboBoxActionPerformed
+        carClassifier.getModels(manufacturerComboBox, modelComboBox);
+    }//GEN-LAST:event_manufacturerComboBoxActionPerformed
+
+    private void modelComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modelComboBoxActionPerformed
+        carDetails = new String[carClassifier.getNumberOfCarDetails()];
+        carDetails = carClassifier.getCarDetails();
+        
+        manufacturerValue.setText(carDetails[0]);
+        modelValue.setText(carDetails[1]);
+        priceValue.setText(carDetails[2]);
+        hpValue.setText(carDetails[3]);
+        weightValue.setText(carDetails[4]);
+        doorsValue.setText(carDetails[5]);
+        seatValue.setText(carDetails[6]);
+    }//GEN-LAST:event_modelComboBoxActionPerformed
+
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(gui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(gui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(gui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(gui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -184,10 +195,11 @@ public class gui extends javax.swing.JFrame {
     private javax.swing.JLabel doorsValue;
     private javax.swing.JLabel hpLabel;
     private javax.swing.JLabel hpValue;
-    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JPanel mainPanel;
+    private javax.swing.JComboBox manufacturerComboBox;
     private javax.swing.JLabel manufacturerLabel;
     private javax.swing.JLabel manufacturerValue;
+    private javax.swing.JComboBox modelComboBox;
     private javax.swing.JLabel modelLabel;
     private javax.swing.JLabel modelValue;
     private javax.swing.JLabel priceLabel;

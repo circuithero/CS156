@@ -29,6 +29,13 @@ public class carsDatabase {
         }
     }
     
+    /**
+     * get the database connection object.
+     */
+    public Connection getDBConnection() {
+        return this.con;
+    }
+    
     private void disconnectFromDB() {
         try {
             con.close();

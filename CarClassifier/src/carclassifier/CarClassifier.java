@@ -4,6 +4,12 @@
  */
 package carclassifier;
 
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.JComboBox;
+
 /**
  * A class that determines the classification of passenger vehicles.
  *
@@ -12,6 +18,11 @@ package carclassifier;
  */
 public class CarClassifier {
 
+    private static final String con = "jdbc:oracle:thin:@localhost:1521:orcl"; //connection string
+    private static final String user = "scott"; //database user
+    private static final String password = "tiger"; //database password
+    private static carsDatabase DBC;
+    private static Statement stmnt;
     private static final int MINI_LOW = 1500;
     private static final int MINI_HIGH = 1999;
     private static final int LIGHT = 2499;
@@ -20,16 +31,19 @@ public class CarClassifier {
     private static final int HEAVY = 3500;
     private static final int LUXURY = 50000;
     private static final int SPORT = 200;
+    private String[] carDetails;
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        // TODO code application logic here
+    public CarClassifier() {
+        try {
+            DBC = new carsDatabase(con, user, password);
+            stmnt = DBC.getDBConnection().createStatement();
+        } catch (SQLException ex)  {
+            System.err.println(ex.getMessage());
+        }
     }
 
     /**
-     * Determine whether the mode is a sport or luxury vehicle.
+     * Determine whether the model is a sport or luxury vehicle.
      *
      * @param cost the cost of the vehicle
      * @param hp the horsepower of the vehicle
@@ -98,5 +112,45 @@ public class CarClassifier {
             }
         }
         return type;
+    }
+    
+    public void getModels(JComboBox manufacturerComboBox, JComboBox modelComboBox) {
+        try {
+            ResultSet rs;
+            String manufacturer = manufacturerComboBox.getSelectedItem().toString();
+            
+            String query = "select distinct model from "
+                    + manufacturer + " order by model asc";
+            rs = stmnt.executeQuery(query);
+            while (rs.next()) {
+                modelComboBox.addItem(rs.getString(1));
+            } 
+        } catch (Exception e) {
+        }
+    }
+    
+    public void getModelDetails(JComboBox modelComboBox) {
+        try {
+            ResultSet rs;
+            String model = modelComboBox.getSelectedItem().toString();
+            
+            String query = "select * from CARS where model='" + model + "'";
+            rs = stmnt.executeQuery(query);
+            ResultSetMetaData metaData = rs.getMetaData();
+            carDetails = new String[metaData.getColumnCount()];
+            for (int i = 1; i <= metaData.getColumnCount(); i++) {
+                carDetails[i - 1] = rs.getString(i);
+            }
+            
+        } catch (Exception e) {
+        }
+    }
+    
+    public String[] getCarDetails() {
+        return carDetails;
+    }
+    
+    public int getNumberOfCarDetails() {
+        return carDetails.length;
     }
 }
