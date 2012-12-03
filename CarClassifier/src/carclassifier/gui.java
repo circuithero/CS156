@@ -67,7 +67,6 @@ public class gui extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMaximumSize(new java.awt.Dimension(450, 420));
         setMinimumSize(new java.awt.Dimension(450, 420));
-        setPreferredSize(new java.awt.Dimension(450, 420));
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {

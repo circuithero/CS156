@@ -4,8 +4,6 @@
  */
 package carclassifier;
 
-import java.sql.Statement;
-
 /**
  * A class that determines the classification of passenger vehicles.
  *
@@ -13,8 +11,6 @@ import java.sql.Statement;
  * @version 1.0
  */
 public class CarClassifier {
-    private static carsDatabase DBC;
-    private static Statement stmnt;
     private static final int MINI_LOW = 1500;
     private static final int MINI_HIGH = 1999;
     private static final int LIGHT = 2499;
@@ -43,9 +39,11 @@ public class CarClassifier {
         if (cost >= LUXURY) {
             costType = " luxury";
         }
-        if (hp >= SPORT && (!type.equalsIgnoreCase("minivan") || 
-                (!type.equalsIgnoreCase("SUV")))) {
-            costType += " sports";
+        if (hp >= SPORT) {
+            if (!type.equalsIgnoreCase(" SUV") && 
+                    !type.equalsIgnoreCase(" minivan")) {
+                costType += " sports";
+            }
         }
         return costType;
     }
@@ -93,10 +91,10 @@ public class CarClassifier {
                 type = " minivan";
             }
         } else if (doors == 5) {
-            if (seats == 5) {
+            if (seats == 7) {
                 type = " SUV";
-            } else if (seats == 7 || seats == 8) {
-                type = " minivan";
+            } else {
+                type = " hatchback";
             }
         }
         return type;
