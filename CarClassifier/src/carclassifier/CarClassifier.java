@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 
 /**
@@ -32,6 +33,7 @@ public class CarClassifier {
     private static final int LUXURY = 50000;
     private static final int SPORT = 200;
     private String[] carDetails;
+    String[] models = new String[10];
 
     public CarClassifier() {
         try {
@@ -119,34 +121,40 @@ public class CarClassifier {
     }
     
     public void getModels(JComboBox manufacturerComboBox, JComboBox modelComboBox) {
+        modelComboBox.removeAllItems();
+        modelComboBox.setEnabled(false);
+        int i = 1;
         try {
             ResultSet rs;
-            String manufacturer = manufacturerComboBox.getSelectedItem().toString();
-            
-            String query = "select distinct model from "
-                    + manufacturer + " order by model asc";
+            String manufacturer = 
+                manufacturerComboBox.getSelectedItem().toString().toUpperCase();
+           
+            String query = "select distinct model from CARS where maker='"
+                    + manufacturer + "' order by model asc";        
             rs = stmnt.executeQuery(query);
             while (rs.next()) {
-                modelComboBox.addItem(rs.getString(1));
+                models[i - 1] = rs.getString(i);               
+                i++;
             }
-            getModelDetails(modelComboBox);
         } catch (Exception e) {
         }
     }
     
-    private void getModelDetails(JComboBox modelComboBox) {
+    public void getModelDetails(JComboBox modelComboBox) {
+        for (int i = 0; i < models.length; i++) {
+            modelComboBox.addItem(models[i]);
+        }
         try {
             ResultSet rs;
             String model = modelComboBox.getSelectedItem().toString();
             
-            String query = "select * from CARS where model='" + model + "'";
+            String query = "select * from CARS where model='" + model + "'";   
             rs = stmnt.executeQuery(query);
             ResultSetMetaData metaData = rs.getMetaData();
             carDetails = new String[metaData.getColumnCount()];
             for (int i = 1; i <= metaData.getColumnCount(); i++) {
-                carDetails[i - 1] = rs.getString(i);
+                carDetails[i - 1] = rs.getString(i);               
             }
-            
         } catch (Exception e) {
         }
     }

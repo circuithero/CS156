@@ -4,10 +4,6 @@
  */
 package carclassifier;
 
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  *
  * @author Danny Ng
@@ -112,31 +108,24 @@ public class gui extends javax.swing.JFrame {
         mainPanel.add(seatLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 300, -1, -1));
 
         seatValue.setFont(new java.awt.Font("Segoe UI Light", 0, 18)); // NOI18N
-        seatValue.setText("5");
         mainPanel.add(seatValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 300, -1, -1));
 
         doorsValue.setFont(new java.awt.Font("Segoe UI Light", 0, 18)); // NOI18N
-        doorsValue.setText("4");
         mainPanel.add(doorsValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 260, -1, -1));
 
         weightValue.setFont(new java.awt.Font("Segoe UI Light", 0, 18)); // NOI18N
-        weightValue.setText("3509");
         mainPanel.add(weightValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 220, -1, -1));
 
         hpValue.setFont(new java.awt.Font("Segoe UI Light", 0, 18)); // NOI18N
-        hpValue.setText("211");
         mainPanel.add(hpValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 180, -1, -1));
 
         priceValue.setFont(new java.awt.Font("Segoe UI Light", 0, 18)); // NOI18N
-        priceValue.setText("32500");
         mainPanel.add(priceValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 140, -1, -1));
 
         modelValue.setFont(new java.awt.Font("Segoe UI Light", 0, 18)); // NOI18N
-        modelValue.setText("A4");
         mainPanel.add(modelValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 100, -1, -1));
 
         manufacturerValue.setFont(new java.awt.Font("Segoe UI Light", 0, 18)); // NOI18N
-        manufacturerValue.setText("Audi");
         mainPanel.add(manufacturerValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 60, -1, -1));
 
         classLabel.setFont(new java.awt.Font("Segoe UI Light", 0, 18)); // NOI18N
@@ -148,6 +137,7 @@ public class gui extends javax.swing.JFrame {
         mainPanel.add(classValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 380, -1, -1));
 
         modelComboBox.setFont(new java.awt.Font("Segoe UI Light", 0, 18)); // NOI18N
+        modelComboBox.setEnabled(false);
         modelComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 modelComboBoxActionPerformed(evt);
@@ -171,6 +161,8 @@ public class gui extends javax.swing.JFrame {
 
     private void manufacturerComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manufacturerComboBoxActionPerformed
         carClassifier.getModels(manufacturerComboBox, modelComboBox);
+        modelComboBox.setEnabled(true);
+        carClassifier.getModelDetails(modelComboBox);
     }//GEN-LAST:event_manufacturerComboBoxActionPerformed
 
     private void modelComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modelComboBoxActionPerformed
