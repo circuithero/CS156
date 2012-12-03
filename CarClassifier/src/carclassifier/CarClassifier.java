@@ -31,9 +31,9 @@ public class CarClassifier {
      */
     public String calculateCost(int cost, int hp) {
         String costType = "";
-        int luxuryCost = (LUXURY + cost / 2) - THRESHOLD;
+        int luxuryCost = ((LUXURY + cost) / 2) - THRESHOLD;        
         if (luxuryCost > LUXURY) {
-            LUXURY = luxuryCost;
+            LUXURY = luxuryCost;            
         }
 
         if (cost >= LUXURY) {
