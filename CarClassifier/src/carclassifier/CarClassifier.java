@@ -124,12 +124,13 @@ public class CarClassifier {
             rs = stmnt.executeQuery(query);
             while (rs.next()) {
                 modelComboBox.addItem(rs.getString(1));
-            } 
+            }
+            getModelDetails(modelComboBox);
         } catch (Exception e) {
         }
     }
     
-    public void getModelDetails(JComboBox modelComboBox) {
+    private void getModelDetails(JComboBox modelComboBox) {
         try {
             ResultSet rs;
             String model = modelComboBox.getSelectedItem().toString();
