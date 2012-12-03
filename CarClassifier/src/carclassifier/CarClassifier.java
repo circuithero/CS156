@@ -120,7 +120,7 @@ public class CarClassifier {
         return type;
     }
     
-    public void getModels(JComboBox manufacturerComboBox, JComboBox modelComboBox) {
+    /*public void getModels(JComboBox manufacturerComboBox, JComboBox modelComboBox) {
         modelComboBox.removeAllItems();
         modelComboBox.setEnabled(false);
         int i = 1;
@@ -138,9 +138,9 @@ public class CarClassifier {
             }
         } catch (Exception e) {
         }
-    }
+    }*/
     
-    public void getModelDetails(JComboBox modelComboBox) {
+    /*public void getModelDetails(JComboBox modelComboBox) {
         for (int i = 0; i < models.length; i++) {
             modelComboBox.addItem(models[i]);
         }
@@ -157,7 +157,7 @@ public class CarClassifier {
             }
         } catch (Exception e) {
         }
-    }
+    }*/
     
     public String[] getCarDetails() {
         return carDetails;

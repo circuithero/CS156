@@ -4,11 +4,20 @@
  */
 package carclassifier;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 /**
  *
  * @author Danny Ng
  */
 public class gui extends javax.swing.JFrame {
+    private static final String con = "jdbc:oracle:thin:@localhost:1521:orcl"; //connection string
+    private static final String user = "scott"; //database user
+    private static final String password = "tiger"; //database password
+    private static carsDatabase DBC;
+    private static Statement stmnt;
     private CarClassifier carClassifier;
     private String [] carDetails;
     
@@ -160,22 +169,12 @@ public class gui extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void manufacturerComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manufacturerComboBoxActionPerformed
-        carClassifier.getModels(manufacturerComboBox, modelComboBox);
+        getModels();
         modelComboBox.setEnabled(true);
-        carClassifier.getModelDetails(modelComboBox);
     }//GEN-LAST:event_manufacturerComboBoxActionPerformed
 
     private void modelComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modelComboBoxActionPerformed
-        carDetails = new String[carClassifier.getNumberOfCarDetails()];
-        carDetails = carClassifier.getCarDetails();
-        
-        manufacturerValue.setText(carDetails[0]);
-        modelValue.setText(carDetails[1]);
-        priceValue.setText(carDetails[2]);
-        hpValue.setText(carDetails[3]);
-        weightValue.setText(carDetails[4]);
-        doorsValue.setText(carDetails[5]);
-        seatValue.setText(carDetails[6]);
+        getModelDetails();
     }//GEN-LAST:event_modelComboBoxActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
@@ -185,11 +184,60 @@ public class gui extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_formWindowClosing
 
+    private void getModels() {
+        modelComboBox.removeAllItems();
+        modelComboBox.setEnabled(false);
+        try {
+            ResultSet rs;
+            String manufacturer = 
+                manufacturerComboBox.getSelectedItem().toString().toUpperCase();
+           
+            String query = "select distinct model from CARS where maker='"
+                    + manufacturer + "' order by model asc";        
+            rs = stmnt.executeQuery(query);
+            while (rs.next()) {
+                modelComboBox.addItem(rs.getString(1));
+            }
+        } catch (Exception e) {
+        }
+    }
+    
+    private void getModelDetails() {
+        try {
+            ResultSet rs;
+            String model = modelComboBox.getSelectedItem().toString();
+            
+            String query = "select * from CARS where model='" + model + "'";   
+            rs = stmnt.executeQuery(query);
+            /*ResultSetMetaData metaData = rs.getMetaData();
+            carDetails = new String[metaData.getColumnCount()];
+            for (int i = 1; i <= metaData.getColumnCount(); i++) {
+                carDetails[i - 1] = rs.getString(i);               
+            }*/
+            if (rs.next()) {
+                manufacturerValue.setText(rs.getString(1));
+                modelValue.setText(rs.getString(2));
+                priceValue.setText(rs.getString(3));
+                hpValue.setText(rs.getString(4));
+                weightValue.setText(rs.getString(5));
+                doorsValue.setText(rs.getString(6));
+                seatValue.setText(rs.getString(7));
+            }
+        } catch (Exception e) {
+        }
+    }
+    
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
         /* Create and display the form */
+        try {
+            DBC = new carsDatabase(con, user, password);
+            stmnt = DBC.getDBConnection().createStatement();
+        } catch (SQLException ex)  {
+            System.err.println(ex.getMessage());
+        }
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new gui().setVisible(true);
